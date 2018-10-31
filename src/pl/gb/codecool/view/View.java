@@ -4,11 +4,14 @@ import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Slider;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -20,8 +23,13 @@ import pl.gb.codecool.model.Game;
 
 public class View extends Application {
 
-    private int rows;
-    private int columns;
+    private int rows = 25;
+    private int columns = 25;
+    private int cellWeight = 15;
+    private int cellHeight = 15;
+    private int WIDTH = 600;
+    private int HEIGHT = 600;
+    private Duration speed;
 
     private GridPane showInitialBoard(Game game) {
         GridPane grid = new GridPane();
@@ -37,8 +45,8 @@ public class View extends Application {
                 Rectangle cell = new Rectangle();
                 cell.setFill(Color.WHITE);
                 cell.setStroke(Color.BLACK);
-                cell.setHeight(15);
-                cell.setWidth(15);
+                cell.setHeight(cellHeight);
+                cell.setWidth(cellWeight);
                 int finalIndex = index;
                 cell.setOnMouseClicked(e -> {
                     if (cell.getFill().equals(Color.WHITE)) {
@@ -70,8 +78,8 @@ public class View extends Application {
             for (int column = 0; column < columns; column++) {
                 Rectangle cell = new Rectangle();
                 cell.setStroke(Color.BLACK);
-                cell.setHeight(15);
-                cell.setWidth(15);
+                cell.setHeight(cellHeight);
+                cell.setWidth(cellWeight);
                 if (game.getGameBoard().get(index).isState()) {
                     cell.setFill(Color.BLACK);
                 } else {
@@ -87,11 +95,7 @@ public class View extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        setRows(25);
-        setColumns(25);
-        int WIDTH = 600;
-        int HEIGHT = 600;
-
+        speed = Duration.millis(100);
         primaryStage.setTitle("Conway's Game of Life");
         Game game = new Game(getColumns(), getRows());
 
@@ -103,13 +107,15 @@ public class View extends Application {
 
         movementsLabel.setPadding(new Insets(20, 20, 20, 20));
         movementsCountLabel.setPadding(new Insets(20, 20, 20, 20));
-        HBox hBoxUp = new HBox();
-        hBoxUp.getChildren().add(movementsLabel);
-        hBoxUp.getChildren().add(movementsCountLabel);
-        hBoxUp.setAlignment(Pos.TOP_LEFT);
+
+        HBox hBoxTop = new HBox();
+        hBoxTop.getChildren().add(movementsLabel);
+        hBoxTop.getChildren().add(movementsCountLabel);
+        hBoxTop.setAlignment(Pos.TOP_LEFT);
 
         HBox hBoxDown = new HBox();
         hBoxDown.setAlignment(Pos.CENTER);
+
         Button startButton = new Button("Start");
         Button stopButton = new Button("Stop");
         Button newGameButton = new Button("New Game");
@@ -117,11 +123,16 @@ public class View extends Application {
         stopButton.setDisable(true);
         newGameButton.setDisable(true);
 
+        Slider speedSlider = new Slider(100, 1000, 100);
+        Label speedValue = new Label(Double.toString(speedSlider.getValue()));
+
         hBoxDown.getChildren().add(startButton);
         hBoxDown.getChildren().add(stopButton);
         hBoxDown.getChildren().add(newGameButton);
+        hBoxDown.getChildren().add(speedSlider);
+        hBoxDown.getChildren().add(speedValue);
 
-        borderPane.setTop(hBoxUp);
+        borderPane.setTop(hBoxTop);
         borderPane.setBottom(hBoxDown);
         borderPane.setCenter(showInitialBoard(game));
         borderPane.setPadding(new Insets(20, 20, 20, 20));
@@ -130,9 +141,14 @@ public class View extends Application {
 
         Timeline timeline = new Timeline();
 
-        int move = 0;
+        speedSlider.valueProperty().addListener((ov, old_val, new_val) -> {
+            speed = Duration.millis((int) Double.parseDouble(old_val + ""));
+            System.out.println(speed);
+            speedValue.setText(speed + "");
+        });
+
         timeline.getKeyFrames().add(
-                new KeyFrame(Duration.millis(200), event -> {
+                new KeyFrame(speed, (speed) -> {
                     game.move();
                     if (game.stopAnimation()) {
                         timeline.stop();
@@ -141,12 +157,12 @@ public class View extends Application {
                     }
                     game.prepareBoards();
                     borderPane.setCenter(showBoard(game));
-                    movementsCountLabel.setText((Integer.parseInt(movementsCountLabel.getText()) + 1)  + "");
+                    movementsCountLabel.setText((Integer.parseInt(movementsCountLabel.getText()) + 1) + "");
 
-                    hBoxUp.getChildren().clear();
-                    hBoxUp.getChildren().add(movementsLabel);
-                    hBoxUp.getChildren().add(movementsCountLabel);
-                    borderPane.setTop(hBoxUp);
+                    hBoxTop.getChildren().clear();
+                    hBoxTop.getChildren().add(movementsLabel);
+                    hBoxTop.getChildren().add(movementsCountLabel);
+                    borderPane.setTop(hBoxTop);
                     primaryStage.getScene().setRoot(borderPane);
                 }));
 
@@ -166,10 +182,10 @@ public class View extends Application {
 
         newGameButton.setOnAction(event -> {
             movementsCountLabel.setText("0");
-            hBoxUp.getChildren().clear();
-            hBoxUp.getChildren().add(movementsLabel);
-            hBoxUp.getChildren().add(movementsCountLabel);
-            borderPane.setTop(hBoxUp);
+            hBoxTop.getChildren().clear();
+            hBoxTop.getChildren().add(movementsLabel);
+            hBoxTop.getChildren().add(movementsCountLabel);
+            borderPane.setTop(hBoxTop);
             game.newGame();
             borderPane.setCenter(showInitialBoard(game));
             primaryStage.getScene().setRoot(borderPane);
