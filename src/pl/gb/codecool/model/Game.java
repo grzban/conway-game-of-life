@@ -162,11 +162,4 @@ public class Game {
         return gameBoard;
     }
 
-    public Board getBoard() {
-        return board;
-    }
-
-    public void setBoard(Board board) {
-        this.board = board;
-    }
 }

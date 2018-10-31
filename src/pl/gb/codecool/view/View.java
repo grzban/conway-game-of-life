@@ -8,6 +8,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -88,8 +89,8 @@ public class View extends Application {
     public void start(Stage primaryStage) {
         setRows(25);
         setColumns(25);
-        int WIDTH = 500;
-        int HEIGHT = 500;
+        int WIDTH = 600;
+        int HEIGHT = 600;
 
         primaryStage.setTitle("Conway's Game of Life");
         Game game = new Game(getColumns(), getRows());
@@ -97,8 +98,18 @@ public class View extends Application {
         BorderPane borderPane = new BorderPane();
         Scene scene = new Scene(borderPane, WIDTH, HEIGHT);
 
-        HBox hBox = new HBox();
-        hBox.setAlignment(Pos.CENTER);
+        Label movementsLabel = new Label("Movements");
+        Label movementsCountLabel = new Label("0");
+
+        movementsLabel.setPadding(new Insets(20, 20, 20, 20));
+        movementsCountLabel.setPadding(new Insets(20, 20, 20, 20));
+        HBox hBoxUp = new HBox();
+        hBoxUp.getChildren().add(movementsLabel);
+        hBoxUp.getChildren().add(movementsCountLabel);
+        hBoxUp.setAlignment(Pos.TOP_LEFT);
+
+        HBox hBoxDown = new HBox();
+        hBoxDown.setAlignment(Pos.CENTER);
         Button startButton = new Button("Start");
         Button stopButton = new Button("Stop");
         Button newGameButton = new Button("New Game");
@@ -106,11 +117,12 @@ public class View extends Application {
         stopButton.setDisable(true);
         newGameButton.setDisable(true);
 
-        hBox.getChildren().add(startButton);
-        hBox.getChildren().add(stopButton);
-        hBox.getChildren().add(newGameButton);
+        hBoxDown.getChildren().add(startButton);
+        hBoxDown.getChildren().add(stopButton);
+        hBoxDown.getChildren().add(newGameButton);
 
-        borderPane.setBottom(hBox);
+        borderPane.setTop(hBoxUp);
+        borderPane.setBottom(hBoxDown);
         borderPane.setCenter(showInitialBoard(game));
         borderPane.setPadding(new Insets(20, 20, 20, 20));
         primaryStage.setScene(scene);
@@ -118,6 +130,7 @@ public class View extends Application {
 
         Timeline timeline = new Timeline();
 
+        int move = 0;
         timeline.getKeyFrames().add(
                 new KeyFrame(Duration.millis(100), event -> {
                     game.move();
@@ -128,9 +141,13 @@ public class View extends Application {
                     }
                     game.prepareBoards();
                     borderPane.setCenter(showBoard(game));
+                    movementsCountLabel.setText((Integer.parseInt(movementsCountLabel.getText()) + 1)  + "");
+                    hBoxUp.getChildren().clear();
+                    hBoxUp.getChildren().add(movementsLabel);
+                    hBoxUp.getChildren().add(movementsCountLabel);
+                    borderPane.setTop(hBoxUp);
                     primaryStage.getScene().setRoot(borderPane);
                 }));
-
 
         timeline.setCycleCount(Animation.INDEFINITE);
 
