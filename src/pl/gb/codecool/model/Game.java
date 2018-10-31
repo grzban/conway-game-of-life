@@ -22,12 +22,30 @@ public class Game {
         tempGameBoard = board.getTempBoard();
     }
 
+    private boolean compareBoards(List<Cell> gameBoard, List<Cell> tempGameBoard) {
+        int i = 0;
+        while (i < gameBoard.size()) {
+            if (gameBoard.get(i).isState() != tempGameBoard.get(i).isState()) {
+                return false;
+            }
+            i++;
+        }
+        return true;
+    }
+
+    public void prepareBoards() {
+        gameBoard = board.copyBoard(tempGameBoard);
+        tempGameBoard = board.copyBoard(gameBoard);
+    }
+
+    public boolean stopAnimation () {
+        return compareBoards(gameBoard, tempGameBoard);
+    }
+
     public void move() {
         for (int index = 0; index < gameBoard.size(); index++) {
             changeCellStatus(index);
         }
-        gameBoard = board.copyBoard(tempGameBoard);
-        tempGameBoard = board.copyBoard(gameBoard);
     }
 
     private boolean isNeighbourAlive(int neighbourIndex) {
@@ -42,7 +60,6 @@ public class Game {
         for (int i = 0; i < ROWS; i++) {
             int start = i * COLUMNS;
             int end = start + COLUMNS - 1;
-            System.out.println(start + " " + end);
             if (index >= start && index <= end) {
                 return i;
             }

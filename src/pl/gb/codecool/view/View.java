@@ -86,8 +86,8 @@ public class View extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        setRows(5);
-        setColumns(5);
+        setRows(25);
+        setColumns(25);
         int WIDTH = 500;
         int HEIGHT = 500;
 
@@ -101,14 +101,14 @@ public class View extends Application {
         hBox.setAlignment(Pos.CENTER);
         Button startButton = new Button("Start");
         Button stopButton = new Button("Stop");
-        Button clearButton = new Button("Clear");
+        Button newGameButton = new Button("New Game");
         startButton.setDisable(false);
         stopButton.setDisable(true);
-        clearButton.setDisable(true);
+        newGameButton.setDisable(true);
 
         hBox.getChildren().add(startButton);
         hBox.getChildren().add(stopButton);
-        hBox.getChildren().add(clearButton);
+        hBox.getChildren().add(newGameButton);
 
         borderPane.setBottom(hBox);
         borderPane.setCenter(showInitialBoard(game));
@@ -116,11 +116,21 @@ public class View extends Application {
         primaryStage.setScene(scene);
 
 
-        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(100), event -> {
-            game.move();
-            borderPane.setCenter(showBoard(game));
-            primaryStage.getScene().setRoot(borderPane);
-        }));
+        Timeline timeline = new Timeline();
+
+        timeline.getKeyFrames().add(
+                new KeyFrame(Duration.millis(100), event -> {
+                    game.move();
+                    if (game.stopAnimation()) {
+                        timeline.stop();
+                        stopButton.setDisable(true);
+                        newGameButton.setDisable(false);
+                    }
+                    game.prepareBoards();
+                    borderPane.setCenter(showBoard(game));
+                    primaryStage.getScene().setRoot(borderPane);
+                }));
+
 
         timeline.setCycleCount(Animation.INDEFINITE);
 
@@ -132,17 +142,17 @@ public class View extends Application {
 
         stopButton.setOnAction(event -> {
             stopButton.setDisable(true);
-            clearButton.setDisable(false);
+            newGameButton.setDisable(false);
             timeline.stop();
         });
 
-        clearButton.setOnAction(event -> {
+        newGameButton.setOnAction(event -> {
             game.newGame();
             borderPane.setCenter(showInitialBoard(game));
             primaryStage.getScene().setRoot(borderPane);
             stopButton.setDisable(true);
             startButton.setDisable(false);
-            clearButton.setDisable(true);
+            newGameButton.setDisable(true);
 
         });
 
