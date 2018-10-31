@@ -132,7 +132,7 @@ public class View extends Application {
 
         int move = 0;
         timeline.getKeyFrames().add(
-                new KeyFrame(Duration.millis(100), event -> {
+                new KeyFrame(Duration.millis(200), event -> {
                     game.move();
                     if (game.stopAnimation()) {
                         timeline.stop();
@@ -142,6 +142,7 @@ public class View extends Application {
                     game.prepareBoards();
                     borderPane.setCenter(showBoard(game));
                     movementsCountLabel.setText((Integer.parseInt(movementsCountLabel.getText()) + 1)  + "");
+
                     hBoxUp.getChildren().clear();
                     hBoxUp.getChildren().add(movementsLabel);
                     hBoxUp.getChildren().add(movementsCountLabel);
@@ -164,6 +165,11 @@ public class View extends Application {
         });
 
         newGameButton.setOnAction(event -> {
+            movementsCountLabel.setText("0");
+            hBoxUp.getChildren().clear();
+            hBoxUp.getChildren().add(movementsLabel);
+            hBoxUp.getChildren().add(movementsCountLabel);
+            borderPane.setTop(hBoxUp);
             game.newGame();
             borderPane.setCenter(showInitialBoard(game));
             primaryStage.getScene().setRoot(borderPane);
