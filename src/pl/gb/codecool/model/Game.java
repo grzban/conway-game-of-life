@@ -13,7 +13,10 @@ public class Game {
     public Game(int COLUMNS, int ROWS) {
         this.COLUMNS = COLUMNS;
         this.ROWS = ROWS;
+        newGame();
+    }
 
+    public void newGame() {
         board = new Board(COLUMNS, ROWS);
         gameBoard = board.getBoard();
         tempGameBoard = board.getTempBoard();
@@ -36,10 +39,10 @@ public class Game {
     }
 
     private int rowNumber(int index) {
-        int i;
-        for (i = 0; i < ROWS; i++) {
+        for (int i = 0; i < ROWS; i++) {
             int start = i * COLUMNS;
             int end = start + COLUMNS - 1;
+            System.out.println(start + " " + end);
             if (index >= start && index <= end) {
                 return i;
             }
@@ -138,11 +141,15 @@ public class Game {
         }
     }
 
-    public List<Cell> getTempGameBoard() {
-        return tempGameBoard;
-    }
-
     public List<Cell> getGameBoard() {
         return gameBoard;
+    }
+
+    public Board getBoard() {
+        return board;
+    }
+
+    public void setBoard(Board board) {
+        this.board = board;
     }
 }

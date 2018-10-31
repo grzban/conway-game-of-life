@@ -86,8 +86,8 @@ public class View extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        setRows(25);
-        setColumns(25);
+        setRows(5);
+        setColumns(5);
         int WIDTH = 500;
         int HEIGHT = 500;
 
@@ -101,11 +101,14 @@ public class View extends Application {
         hBox.setAlignment(Pos.CENTER);
         Button startButton = new Button("Start");
         Button stopButton = new Button("Stop");
+        Button clearButton = new Button("Clear");
         startButton.setDisable(false);
         stopButton.setDisable(true);
+        clearButton.setDisable(true);
 
         hBox.getChildren().add(startButton);
         hBox.getChildren().add(stopButton);
+        hBox.getChildren().add(clearButton);
 
         borderPane.setBottom(hBox);
         borderPane.setCenter(showInitialBoard(game));
@@ -113,7 +116,7 @@ public class View extends Application {
         primaryStage.setScene(scene);
 
 
-        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(1), event -> {
+        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(100), event -> {
             game.move();
             borderPane.setCenter(showBoard(game));
             primaryStage.getScene().setRoot(borderPane);
@@ -128,10 +131,21 @@ public class View extends Application {
         });
 
         stopButton.setOnAction(event -> {
-            startButton.setDisable(false);
             stopButton.setDisable(true);
+            clearButton.setDisable(false);
             timeline.stop();
         });
+
+        clearButton.setOnAction(event -> {
+            game.newGame();
+            borderPane.setCenter(showInitialBoard(game));
+            primaryStage.getScene().setRoot(borderPane);
+            stopButton.setDisable(true);
+            startButton.setDisable(false);
+            clearButton.setDisable(true);
+
+        });
+
         primaryStage.show();
     }
 
