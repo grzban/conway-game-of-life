@@ -5,7 +5,6 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
@@ -17,13 +16,12 @@ import javafx.util.Duration;
 import pl.gb.codecool.model.Game;
 
 public class GameOfLifeController {
-    private int rows = 25;
-    private int columns = 25;
-    private int cellWeight = 15;
-    private int cellHeight = 15;
+    private int rows = 50;
+    private int columns = 50;
 
     private Game game;
     private Timeline timeline;
+    private GridPane grid;
 
     @FXML
     private Pane board_container;
@@ -50,6 +48,8 @@ public class GameOfLifeController {
     private Label speed_label;
 
     public void initialize() {
+        grid = new GridPane();
+        board_container.getChildren().add(grid);
         newGame();
     }
 
@@ -62,8 +62,13 @@ public class GameOfLifeController {
         KeyFrame keyFrame = new KeyFrame(speed, (ev) -> {
             if (game.isGameStatus()) {
                 game.move();
-                board_container.getChildren().add(showBoard(game));
+                showBoard(game);
                 moves_count.setText((Integer.parseInt(moves_count.getText()) + 1) + "");
+                start_button.setDisable(true);
+                pause_button.setDisable(false);
+                stop_button.setDisable(false);
+                new_game_button.setDisable(true);
+                speed_slider.setDisable(true);
             } else {
                 stopGame();
             }
@@ -71,12 +76,8 @@ public class GameOfLifeController {
 
         timeline.getKeyFrames().add(keyFrame);
         timeline.setCycleCount(Animation.INDEFINITE);
-        timeline.play();
-        start_button.setDisable(true);
-        pause_button.setDisable(false);
-        stop_button.setDisable(false);
-        new_game_button.setDisable(true);
-        speed_slider.setDisable(true);
+        timeline.playFromStart();
+
     }
 
     private void newGame() {
@@ -88,8 +89,8 @@ public class GameOfLifeController {
         pause_button.setDisable(true);
         new_game_button.setDisable(true);
         speed_slider.setDisable(false);
-        speed_label.setText((int)speed_slider.getValue() + "");
-        board_container.getChildren().add(showInitialBoard(game));
+        speed_label.setText((int) speed_slider.getValue() + "");
+        showBoard(game);
     }
 
 
@@ -135,9 +136,8 @@ public class GameOfLifeController {
         newGame();
     }
 
-    private GridPane showInitialBoard(Game game) {
-        GridPane grid = new GridPane();
-
+    private void showBoard(Game game) {
+        grid.getChildren().clear();
         int index = 0;
         grid.setHgap(1);
         grid.setVgap(1);
@@ -148,52 +148,31 @@ public class GameOfLifeController {
                 Rectangle cell = new Rectangle();
                 cell.setFill(Color.WHITE);
                 cell.setStroke(Color.BLACK);
+                int cellHeight = 10;
                 cell.setHeight(cellHeight);
+                int cellWeight = 10;
                 cell.setWidth(cellWeight);
                 int finalIndex = index;
-                cell.setOnMouseClicked(e -> {
-                    if (cell.getFill().equals(Color.WHITE)) {
-                        game.changeCellState(finalIndex, true);
+                if (start_button.isDisable()) {
+                    if (game.getGameBoard().get(index).isState()) {
                         cell.setFill(Color.BLACK);
                     } else {
-                        game.changeCellState(finalIndex, false);
                         cell.setFill(Color.WHITE);
                     }
-                });
-
-                grid.add(cell, column, row);
-                index++;
-            }
-        }
-        return grid;
-    }
-
-
-    private GridPane showBoard(Game game) {
-        GridPane grid = new GridPane();
-
-        grid.setAlignment(Pos.CENTER);
-        grid.setHgap(1);
-        grid.setVgap(1);
-        grid.setPadding(new Insets(0, 0, 0, 0));
-
-        int index = 0;
-        for (int row = 0; row < rows; row++) {
-            for (int column = 0; column < columns; column++) {
-                Rectangle cell = new Rectangle();
-                cell.setStroke(Color.BLACK);
-                cell.setHeight(cellHeight);
-                cell.setWidth(cellWeight);
-                if (game.getGameBoard().get(index).isState()) {
-                    cell.setFill(Color.BLACK);
                 } else {
-                    cell.setFill(Color.WHITE);
+                    cell.setOnMouseClicked(e -> {
+                        if (cell.getFill().equals(Color.WHITE)) {
+                            game.changeCellState(finalIndex, true);
+                            cell.setFill(Color.BLACK);
+                        } else {
+                            game.changeCellState(finalIndex, false);
+                            cell.setFill(Color.WHITE);
+                        }
+                    });
                 }
-
                 grid.add(cell, column, row);
                 index++;
             }
         }
-        return grid;
     }
 }
