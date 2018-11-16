@@ -4,19 +4,23 @@ public class Cell {
     private String id;
     private boolean state;
 
+    Cell() {
+        state = false;
+    }
+
     public boolean isState() {
         return state;
     }
 
-    public void setState(boolean state) {
+    void setState(boolean state) {
         this.state = state;
     }
 
-    public String getId() {
+    String getId() {
         return id;
     }
 
-    public void setId(String id) {
+    void setId(String id) {
         this.id = id;
     }
 

@@ -9,43 +9,43 @@ public class Game {
     private List<Cell> gameBoard;
     private List<Cell> tempGameBoard;
     private Board board;
+    private boolean gameStatus;
 
-    public Game(int COLUMNS, int ROWS) {
-        this.COLUMNS = COLUMNS;
+    public Game(int ROWS, int COLUMNS) {
         this.ROWS = ROWS;
+        this.COLUMNS = COLUMNS;
+        gameStatus = true;
         newGame();
     }
 
-    public void newGame() {
+    private void newGame() {
         board = new Board(COLUMNS, ROWS);
         gameBoard = board.getBoard();
-        tempGameBoard = board.getTempBoard();
     }
 
-    private boolean compareBoards(List<Cell> gameBoard, List<Cell> tempGameBoard) {
+    private void checkGameStatus() {
+        gameStatus = false;
         int i = 0;
-        while (i < gameBoard.size()) {
+        int sizeOfBoard = gameBoard.size();
+        while (i < sizeOfBoard) {
             if (gameBoard.get(i).isState() != tempGameBoard.get(i).isState()) {
-                return false;
+                gameStatus = true;
+                break;
             }
             i++;
         }
-        return true;
-    }
-
-    public void prepareBoards() {
-        gameBoard = board.copyBoard(tempGameBoard);
-        tempGameBoard = board.copyBoard(gameBoard);
-    }
-
-    public boolean stopAnimation () {
-        return compareBoards(gameBoard, tempGameBoard);
     }
 
     public void move() {
-        for (int index = 0; index < gameBoard.size(); index++) {
+        tempGameBoard = board.copyBoard(gameBoard);
+
+        int gameBoardSize = gameBoard.size();
+        for (int index = 0; index < gameBoardSize; index++) {
             changeCellStatus(index);
         }
+        checkGameStatus();
+        gameBoard.clear();
+        gameBoard = board.copyBoard(tempGameBoard);
     }
 
     private boolean isNeighbourAlive(int neighbourIndex) {
@@ -56,7 +56,7 @@ public class Game {
         return false;
     }
 
-    private int rowNumber(int index) {
+    public int rowNumber(int index) {
         for (int i = 0; i < ROWS; i++) {
             int start = i * COLUMNS;
             int end = start + COLUMNS - 1;
@@ -136,9 +136,9 @@ public class Game {
         gameBoard.get(index).setState(state);
     }
 
-    public void changeCellStatus(int index) {
+    private void changeCellStatus(int index) {
         int aliveNeighbours = howManyNeighboursIsAlive(index);
-        if (gameBoard.get(index).isState()) {
+        if (getGameBoard().get(index).isState()) {
             //Any live cell with fewer than two live neighbors dies, as if by underpopulation.
             if (aliveNeighbours < 2) {
                 tempGameBoard.get(index).setState(false);
@@ -147,7 +147,7 @@ public class Game {
             else if (aliveNeighbours == 2 || aliveNeighbours == 3) {
                 tempGameBoard.get(index).setState(true);
             }//Any live cell with more than three live neighbors dies, as if by overpopulation.
-            else if (aliveNeighbours > 3) {
+            else {
                 tempGameBoard.get(index).setState(false);
             }
         }//Any dead cell with exactly three live neighbors becomes a live cell, as if by reproduction.
@@ -156,10 +156,14 @@ public class Game {
                 tempGameBoard.get(index).setState(true);
             }
         }
+
     }
 
     public List<Cell> getGameBoard() {
         return gameBoard;
     }
 
+    public boolean isGameStatus() {
+        return gameStatus;
+    }
 }

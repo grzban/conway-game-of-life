@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+<BorderPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.1"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.gb.codecool.controller.GameOfLifeController">
+    <fx:define>
+        <Font fx:id="FONT_HEADER" size="20" name="System Bold"/>
+    </fx:define>
+    <fx:define>
+        <Font fx:id="FONT" size="18"/>
+    </fx:define>
+    <bottom>
+        <HBox alignment="CENTER" prefHeight="46.0" prefWidth="600.0"
+              BorderPane.alignment="CENTER">
+            <Button fx:id="start_button" mnemonicParsing="false" prefHeight="26.0" prefWidth="100.0" text="START"
+                    onAction="#startButtonAction">
+                <HBox.margin>
+                    <Insets left="5.0" right="5.0"/>
+                </HBox.margin>
+            </Button>
+            <Button fx:id="pause_button" mnemonicParsing="false" prefHeight="26.0" prefWidth="100.0" text="PAUSE"
+                    onAction="#pauseButtonAction">
+                <HBox.margin>
+                    <Insets left="5.0" right="5.0"/>
+                </HBox.margin>
+            </Button>
+            <Button fx:id="stop_button" mnemonicParsing="false" prefHeight="26.0" prefWidth="100.0" text="STOP"
+                    onAction="#stopButtonAction">
+                <HBox.margin>
+                    <Insets left="5.0" right="5.0"/>
+                </HBox.margin>
+            </Button>
+            <Button fx:id="new_game_button" mnemonicParsing="false" prefHeight="26.0" prefWidth="100.0" text="NEW GAME"
+                    onAction="#newGameButtonAction">
+                <HBox.margin>
+                    <Insets left="5.0" right="5.0"/>
+                </HBox.margin>
+            </Button>
+            <opaqueInsets>
+                <Insets bottom="25.0" left="25.0" right="25.0" top="25.0"/>
+            </opaqueInsets>
+            <padding>
+                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+            </padding>
+        </HBox>
+    </bottom>
+    <top>
+        <HBox alignment="CENTER_LEFT" fillHeight="false" prefHeight="100.0" prefWidth="200.0"
+              BorderPane.alignment="TOP_CENTER">
+            <Label text="Moves:" HBox.hgrow="NEVER" font="$FONT_HEADER">
+                <padding>
+                    <Insets bottom="25.0" left="25.0" right="25.0" top="25.0"/>
+                </padding>
+            </Label>
+            <Label text="0" textAlignment="CENTER" fx:id="moves_count" font="$FONT_HEADER"/>
+        </HBox>
+    </top>
+    <right>
+        <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+            <Label text="Speed" font="$FONT_HEADER">
+                <padding>
+                    <Insets top="20"/>
+                </padding>
+            </Label>
+            <Label fx:id="speed_label" font="$FONT_HEADER">
+                <padding>
+                    <Insets bottom="20"/>
+                </padding>
+            </Label>
+            <Label text="Max" font="$FONT"/>
+            <Slider fx:id="speed_slider" orientation="VERTICAL" showTickMarks="true" min="1000" max="2000" value="100"
+                    onMouseDragged="#speedSliderAction">
+                <VBox.margin>
+                    <Insets top="10" bottom="10" left="10" right="10"/>
+                </VBox.margin>
+            </Slider>
+            <Label text="Min" font="$FONT"/>
+        </VBox>
+    </right>
+    <left>
+        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER"/>
+    </left>
+    <center>
+        <Pane fx:id="board_container" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER"/>
+    </center>
+</BorderPane>
