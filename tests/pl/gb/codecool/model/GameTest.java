@@ -1,14 +1,11 @@
 package pl.gb.codecool.model;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class GameTest {
 
@@ -40,10 +37,32 @@ class GameTest {
         return board;
     }
 
+    private List<Cell> generateComparisonBoard() {
+        List<Cell> board = new ArrayList<>();
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                Cell cell = new Cell();
+                cell.setId(i + "" + j);
+                if (cell.getId().equals("21") || cell.getId().equals("22") || cell.getId().equals("23")) {
+                    cell.setState(true);
+                }
+                board.add(cell);
+            }
+        }
+        return board;
+    }
+
     @Test
     void move() {
-//        [00 false, 01 false, 02 false, 03 false, 04 false, 10 false, 11 false, 12 true, 13 false, 14 false, 20 false, 21 false, 22 true, 23 false, 24 false, 30 false, 31 false, 32 true, 33 false, 34 false, 40 false, 41 false, 42 false, 43 false, 44 false]
-        System.out.println(gameBoard);
+        List<Cell> comparisonBoard = generateComparisonBoard();
+        game.setGameBoard(gameBoard);
+        game.move();
+
+        int i = 0;
+        int gameBoardSize = gameBoard.size();
+        while (i < gameBoardSize) {
+            Assertions.assertEquals(comparisonBoard.get(i).isState(), game.getGameBoard().get(i).isState());
+        }
     }
 
     @Test
@@ -57,8 +76,6 @@ class GameTest {
             Assertions.assertEquals(j, game.rowNumber(i));
             i++;
         }
-
-
     }
 
     @Test

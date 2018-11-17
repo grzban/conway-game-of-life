@@ -163,6 +163,10 @@ public class Game {
         return gameBoard;
     }
 
+    public void setGameBoard(List<Cell> gameBoard) {
+        this.gameBoard = gameBoard;
+    }
+
     public boolean isGameStatus() {
         return gameStatus;
     }
