@@ -56,7 +56,7 @@ public class Game {
         return false;
     }
 
-    public int rowNumber(int index) {
+    int rowNumber(int index) {
         for (int i = 0; i < ROWS; i++) {
             int start = i * COLUMNS;
             int end = start + COLUMNS - 1;
@@ -114,7 +114,7 @@ public class Game {
         return aliveNeighbours;
     }
 
-    public int howManyNeighboursIsAlive(int index) {
+    int howManyNeighboursIsAlive(int index) {
 
         int aliveNeighbours = 0;
 
@@ -136,7 +136,7 @@ public class Game {
         gameBoard.get(index).setState(state);
     }
 
-    private void changeCellStatus(int index) {
+    void changeCellStatus(int index) {
         int aliveNeighbours = howManyNeighboursIsAlive(index);
         if (getGameBoard().get(index).isState()) {
             //Any live cell with fewer than two live neighbors dies, as if by underpopulation.
@@ -156,15 +156,18 @@ public class Game {
                 tempGameBoard.get(index).setState(true);
             }
         }
-
     }
 
     public List<Cell> getGameBoard() {
         return gameBoard;
     }
 
-    public void setGameBoard(List<Cell> gameBoard) {
+    void setGameBoard(List<Cell> gameBoard) {
         this.gameBoard = gameBoard;
+    }
+
+    void setTempGameBoard(List<Cell> tempGameBoard) {
+        this.tempGameBoard = tempGameBoard;
     }
 
     public boolean isGameStatus() {

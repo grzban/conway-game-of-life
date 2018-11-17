@@ -12,13 +12,17 @@ class GameTest {
     private int rows;
     private int columns;
     private List<Cell> gameBoard;
+    private List<Cell> tempGameBoard;
     private Game game;
+    private Board board;
 
     @BeforeEach
     void setUp() {
         rows = 5;
         columns = 5;
+        board = new Board(columns, rows);
         gameBoard = generateExampleBoard();
+        tempGameBoard = board.copyBoard(gameBoard);
         game = new Game(rows, columns);
     }
 
@@ -93,6 +97,23 @@ class GameTest {
     }
 
     @Test
-    void changeCellState() {
+    void changeCellStatus() {
+        game.setGameBoard(gameBoard);
+        game.setTempGameBoard(tempGameBoard);
+        int i = 0;
+        int gameBoardSize = gameBoard.size();
+        boolean [] cellStatus = {
+                false, false, false, false, false,
+                false, false, false, false, false,
+                false, true, true, true, false,
+                false, false, false, false, false,
+                false, false, false, false, false};
+
+        while (i < gameBoardSize) {
+            game.changeCellStatus(i);
+            Assertions.assertEquals(cellStatus[i], tempGameBoard.get(i).isState());
+            i++;
+        }
+
     }
 }
