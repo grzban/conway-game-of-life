@@ -62,6 +62,7 @@ class GameTest {
         int gameBoardSize = gameBoard.size();
         while (i < gameBoardSize) {
             Assertions.assertEquals(comparisonBoard.get(i).isState(), game.getGameBoard().get(i).isState());
+            i++;
         }
     }
 
@@ -84,9 +85,5 @@ class GameTest {
 
     @Test
     void changeCellState() {
-    }
-
-    @Test
-    void isGameStatus() {
     }
 }
