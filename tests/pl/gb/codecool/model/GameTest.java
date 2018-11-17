@@ -81,6 +81,15 @@ class GameTest {
 
     @Test
     void howManyNeighboursIsAlive() {
+        game.setGameBoard(gameBoard);
+        int i = 0;
+        int gameBoardSize = gameBoard.size();
+        int [] aliveNeighbours = {0, 1, 1, 1, 0, 0, 2, 1, 2, 0, 0, 3, 2, 3, 0, 0, 2, 1, 2, 0, 0, 1, 1, 1, 0};
+
+        while (i < gameBoardSize) {
+            Assertions.assertEquals(aliveNeighbours[i], game.howManyNeighboursIsAlive(i));
+            i++;
+        }
     }
 
     @Test
